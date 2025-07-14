@@ -10,7 +10,7 @@ st.set_page_config(page_title="Linear Algebra Calculator", layout="centered")
 st.title("🧮 Linear Algebra Calculator")
 
 # Sidebar navigation
-image = Image.open("e.jpg")
+image = Image.open("d.jpg")
 st.sidebar.image(image, use_container_width=True)
 st.markdown("---")
 
