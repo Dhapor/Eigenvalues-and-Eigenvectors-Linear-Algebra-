@@ -55,8 +55,8 @@ def simplify_expr(expr):
 
 # Home Page
 if main_section == "Home":
-    st.image('a.jpg',  width = 600)
-    st.header("🏠 Welcome to the Linear Algebra Calculator")
+    st.image('a.jpg',  width = 800)
+    st.header("Welcome to the Linear Algebra Calculator")
     st.markdown("""
     This web application is designed to help you explore and understand key concepts in **Linear Algebra**.
 
