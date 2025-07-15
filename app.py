@@ -10,9 +10,9 @@ st.set_page_config(page_title="Linear Algebra Calculator", layout="centered")
 st.title("🧮 Linear Algebra Calculator")
 
 # Sidebar navigation
-image = Image.open("d.jpg")
-st.sidebar.image(image, use_container_width=True)
-st.markdown("---")
+# image = Image.open("d.jpg")
+# # st.sidebar.image(image, use_container_width=True)
+# st.markdown("---")
 
 # Session state for matrix memory
 if "matrix_input" not in st.session_state:
@@ -56,18 +56,18 @@ def simplify_expr(expr):
 # Home Page
 if main_section == "Home":
     st.image('a.jpg',  width = 800)
-    st.header("Welcome to the Linear Algebra Calculator")
+    st.header("🧮 Welcome to the Linear Algebra Calculator")
     st.markdown("""
     This web application is designed to help you explore and understand key concepts in **Linear Algebra**.
 
     ### 🔍 What You Can Do:
     - Compute **Eigenvalues and Eigenvectors**
     - Perform **Matrix Diagonalization**
-    - Get the **Characteristic Polynomial**
+    - Find the **Characteristic Polynomial**
     - Apply the **Gram-Schmidt Process** for orthonormal bases
     - Rebuild a matrix from given eigenvectors and eigenvalues
-
-    More features like **Minimal Polynomial** and **Jordan Canonical Form** are coming soon!
+    - Determine the **Minimal Polynomial**
+    - Get the **Jordan Canonical Form**
 
     Built with ❤️ by **Datapsalm** and the **PENTAGON SQUAD**
     """)
