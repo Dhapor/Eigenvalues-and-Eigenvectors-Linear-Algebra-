@@ -1,18 +1,11 @@
 import streamlit as st
 import numpy as np
-from PIL import Image
 import sympy as sp
-from sympy import Matrix, symbols, Eq, Rational
-
-
+from sympy import Matrix, symbols, Eq, Rational, Poly
 
 st.set_page_config(page_title="Linear Algebra Calculator", layout="centered")
-st.title("🧮 Linear Algebra Calculator")
-
-# Sidebar navigation
-# image = Image.open("d.jpg")
-# # st.sidebar.image(image, use_container_width=True)
-# st.markdown("---")
+st.title("🦮 Linear Algebra Calculator")
+st.markdown("---")
 
 # Session state for matrix memory
 if "matrix_input" not in st.session_state:
@@ -30,14 +23,14 @@ if main_section == "Features":
         "Eigenvalues & Eigenvectors",
         "Diagonalization",
         "Characteristic Polynomial",
+        "Minimal Polynomial",
+        "Cayley-Hamilton Theorem",
         "Gram-Schmidt Process",
         "Build Matrix from Eigenvectors",
-        "Minimal Polynomial (coming soon)",
-        "Jordan Canonical Form (coming soon)"
+        "Jordan Canonical Form"
     ])
 else:
     feature_page = None
-
 
 def input_matrix(label="Enter matrix A"):
     raw = st.text_area(label, st.session_state.matrix_input)
@@ -55,28 +48,28 @@ def simplify_expr(expr):
 
 # Home Page
 if main_section == "Home":
-    st.image('a.jpg',  width = 800)
-    st.header("🧮 Welcome to the Linear Algebra Calculator")
+    st.header("🏠 Welcome to the Linear Algebra Calculator")
     st.markdown("""
     This web application is designed to help you explore and understand key concepts in **Linear Algebra**.
 
     ### 🔍 What You Can Do:
     - Compute **Eigenvalues and Eigenvectors**
     - Perform **Matrix Diagonalization**
-    - Find the **Characteristic Polynomial**
+    - Get the **Characteristic Polynomial**
+    - Compute the **Minimal Polynomial**
+    - Apply the **Cayley-Hamilton Theorem**
     - Apply the **Gram-Schmidt Process** for orthonormal bases
     - Rebuild a matrix from given eigenvectors and eigenvalues
-    - Determine the **Minimal Polynomial**
-    - Get the **Jordan Canonical Form**
+    - Compute **Jordan Canonical Form**
 
-    Built with ❤️ by **Datapsalm** and the **PENTAGON SQUAD**
+    Built with ❤️ by **Datapsalm** and the **PENTAGON** (Math 300L Squad)
     """)
 
 # Tutorial Page
 elif main_section == "Tutorial":
     st.header("📘 How to Use This App")
     st.markdown("""
-    ### 1️⃣ Matrix Input Format
+    ### 1⃣ Matrix Input Format
     Enter your matrix in the text area like this:
     ```
     1 3
@@ -86,12 +79,12 @@ elif main_section == "Tutorial":
     - Separate entries with spaces
     - You can use fractions (e.g., `1/2`) or integers
 
-    ### 2️⃣ Features
+    ### 2⃣ Features
     - Go to the sidebar and select **Features**, then choose a topic.
     - Input your matrix.
     - Click the compute button for the selected operation.
 
-    ### 3️⃣ Output
+    ### 3⃣ Output
     - Results will appear below the button.
     - Expressions are simplified to clean fractions or integers.
 
@@ -126,7 +119,7 @@ elif main_section == "Features" and feature_page:
     elif feature_page == "Diagonalization":
         st.header("📐 Diagonalization")
         A = input_matrix("Enter a diagonalizable square matrix A:")
-        if st.button("📤 Diagonalize Matrix"):
+        if st.button("📄 Diagonalize Matrix"):
             if A is not None:
                 if A.shape[0] != A.shape[1]:
                     st.error("Matrix must be square")
@@ -142,9 +135,9 @@ elif main_section == "Features" and feature_page:
                         st.error(f"Diagonalization failed: {e}")
 
     elif feature_page == "Characteristic Polynomial":
-        st.header("🧾 Characteristic Polynomial")
+        st.header("🗞 Characteristic Polynomial")
         A = input_matrix("Enter square matrix A:")
-        if st.button("🧮 Compute Characteristic Polynomial"):
+        if st.button("🧲 Compute Characteristic Polynomial"):
             if A is not None:
                 if A.shape[0] != A.shape[1]:
                     st.error("Matrix must be square")
@@ -153,6 +146,79 @@ elif main_section == "Features" and feature_page:
                     char_poly = (A - x * I).det()
                     st.write("Characteristic Polynomial:")
                     st.latex(sp.latex(sp.simplify(char_poly)))
+
+    elif feature_page == "Minimal Polynomial":
+        st.header("🧾 Minimal Polynomial")
+        A = input_matrix("Enter square matrix A:")
+        if st.button("📉 Compute Minimal Polynomial"):
+            try:
+                λ = sp.symbols('λ')
+                n = A.shape[0]
+                if n != A.shape[1]:
+                    st.error("Matrix must be square.")
+                else:
+                    # Characteristic polynomial
+                    char_poly = (A - λ * sp.eye(n)).det()
+                    factors = sp.factor_list(char_poly)[1]  # [(factor, exponent), ...]
+
+                    from itertools import product
+                    def build_poly(combo):
+                        poly = 1
+                        for (factor, _), exp in zip(factors, combo):
+                            poly *= factor**exp
+                        return sp.expand(poly)
+
+                    # Try combinations of factor powers
+                    power_ranges = [range(1, exp + 1) for (_, exp) in factors]
+                    found = False
+
+                    for combo in product(*power_ranges):
+                        candidate = build_poly(combo)
+                        coeffs = sp.Poly(candidate, λ).all_coeffs()
+                        result = sp.zeros(*A.shape)
+                        for i, c in enumerate(coeffs):
+                            result += sp.sympify(c) * A**(len(coeffs) - i - 1)
+                        if result == sp.zeros(*A.shape):
+                            min_poly = candidate
+                            found = True
+                            break
+
+                    if found:
+                        st.subheader("✅ Minimal Polynomial:")
+                        st.latex(sp.latex(sp.factor(min_poly)))
+                    else:
+                        st.warning("⚠️ Couldn't determine minimal polynomial.")
+            except Exception as e:
+                st.error(f"Error computing minimal polynomial: {e}")
+
+
+
+
+
+
+    elif feature_page == "Cayley-Hamilton Theorem":
+        st.header("📜 Cayley-Hamilton Theorem")
+        A = input_matrix("Enter square matrix A:")
+        if st.button("📘 Verify Cayley-Hamilton Theorem"):
+            if A is not None:
+                try:
+                    n = A.shape[0]
+                    I = sp.eye(n)
+                    p = (A - x*I).det().expand()
+                    st.subheader("Characteristic Polynomial:")
+                    st.latex(sp.latex(p))
+                    coeffs = list(reversed(p.as_poly(x).all_coeffs()))
+                    substituted = sum((coeff * A**i for i, coeff in enumerate(coeffs)), start=sp.zeros(*A.shape))
+
+                    simplified = substituted.applyfunc(sp.simplify)
+                    st.subheader("Substituting into Polynomial (Should yield Zero Matrix):")
+                    st.latex(sp.latex(simplified))
+                    if simplified == sp.zeros(*A.shape):
+                        st.success("✅ Cayley-Hamilton Theorem Verified!")
+                    else:
+                        st.warning("⚠️ Cayley-Hamilton Theorem NOT verified. Check your matrix.")
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
     elif feature_page == "Gram-Schmidt Process":
         st.header("📐 Gram-Schmidt Orthonormalization")
@@ -211,9 +277,20 @@ elif main_section == "Features" and feature_page:
                 except Exception as e:
                     st.error(f"Failed to compute matrix A: {e}")
 
-    elif "coming soon" in feature_page:
-        st.header("🚧 Coming Soon")
-        st.markdown("We're working hard to add this feature. Stay tuned!")
+    elif feature_page == "Jordan Canonical Form":
+        st.header("🏛 Jordan Canonical Form")
+        A = input_matrix("Enter square matrix A:")
+        if st.button("📐 Compute Jordan Form"):
+            if A is not None:
+                try:
+                    J, P = A.jordan_form(calc_transform=True)
+                    st.subheader("Jordan Canonical Form J:")
+                    st.latex(sp.latex(J.applyfunc(simplify_expr)))
+                    st.subheader("Transformation Matrix P:")
+                    st.latex(sp.latex(P.applyfunc(simplify_expr)))
+                    st.info("A = P * J * P⁻¹")
+                except Exception as e:
+                    st.error(f"Could not compute Jordan form: {e}")
 
 st.markdown("---")
-st.markdown("<h5 style='text-align: center;'>Built with ❤️ by Datapsalm & the PENTAGON SQUAD</h5>", unsafe_allow_html=True)
+st.markdown("<h5 style='text-align: center;'>Built with ❤️ by Datapsalm & the PENTAGON</h5>", unsafe_allow_html=True)
