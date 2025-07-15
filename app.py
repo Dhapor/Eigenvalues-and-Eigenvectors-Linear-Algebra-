@@ -73,30 +73,31 @@ if main_section == "Home":
 elif main_section == "Tutorial":
     st.header("📘 How to Use This App")
     st.markdown("""
-    ### 1⃣ Matrix Input Format
+    ### 🧾 1. Matrix Input Format
     Enter your matrix in the text area like this:
     ```
     1 3
     2 -4
     ```
-    - Each row is a new line
-    - Separate entries with spaces
-    - You can use fractions (e.g., `1/2`) or integers
+    - Each row goes on a new line  
+    - Separate values with spaces  
+    - You can enter fractions (e.g., `1/2`) or integers  
 
-    ### 2⃣ Features
-    - Go to the sidebar and select **Features**, then choose a topic.
-    - Input your matrix.
-    - Click the compute button for the selected operation.
+    ### ⚙️ 2. Using the Features
+    - Go to the sidebar and select **Features**, then choose a topic  
+    - Input your matrix  
+    - Click the **Compute** button to run the selected operation  
 
-    ### 3⃣ Output
-    - Results will appear below the button.
-    - Expressions are simplified to clean fractions or integers.
+    ### 📤 3. Output
+    - Results will appear just below the compute button  
+    - Expressions are simplified to clean fractions or integers  
 
     ### 💡 Tips
-    - Always ensure the matrix is **square** when computing eigenvalues or diagonalizing.
-    - You can reuse the same matrix across different operations without retyping it.
-    - Use the 'Build Matrix from Eigenvectors' tool to reverse-engineer a matrix given its eigen components.
+    - Make sure the matrix is **square** when working with eigenvalues or diagonalization  
+    - You can reuse your input across different tools  
+    - Use **Build Matrix from Eigenvectors** to reconstruct a matrix from its eigen data  
     """)
+
 
 # Features Section
 elif main_section == "Features" and feature_page:
