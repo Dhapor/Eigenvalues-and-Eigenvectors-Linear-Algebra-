@@ -4,9 +4,9 @@ from PIL import Image
 import sympy as sp
 from sympy import Matrix, symbols, Eq, Rational, Poly
 
-st.set_page_config(page_title="Linear Algebra Calculator", layout="centered")
-st.title("🦮 Linear Algebra Calculator")
-st.markdown("---")
+# st.set_page_config(page_title="Linear Algebra Calculator", layout="centered")
+# st.title("🦮 Linear Algebra Calculator")
+# st.markdown("---")
 
 # Session state for matrix memory
 if "matrix_input" not in st.session_state:
