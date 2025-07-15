@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+from PIL import Image
 import sympy as sp
 from sympy import Matrix, symbols, Eq, Rational, Poly
 
