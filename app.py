@@ -14,6 +14,8 @@ if "matrix_input" not in st.session_state:
 x = symbols('x')
 
 # Sidebar structure
+image = Image.open("d.jpg")
+st.sidebar.image(image, use_container_width=True)
 st.sidebar.title("Main Sections")
 main_section = st.sidebar.radio("Navigate to:", ["Home", "Tutorial", "Features"])
 
